@@ -1,0 +1,98 @@
+const path=require('path')
+const inquirer=require('inquirer')
+const fs=require('fs-extra')
+const downloadGit=require('download-git-repo')
+const del=require('del')
+
+const tmpls=[
+  {
+    text:'移动端( webpack )',
+    abbr:'mobile( webpack )',
+    repo:'PhoonLee/env-mobile-webpack',
+  },
+  {
+    text:'移动端( vue )',
+    abbr:'mobile( vue )',
+    repo:'PhoonLee/env-mobile-vue',
+  }
+]
+let project={
+  repo:'',
+  tmpl:'',
+  dir:''
+}
+
+inquirer
+  .prompt({
+    type:'input',
+    name:'projectName',
+    message:'项目名称:',
+    async validate(input){
+      const done=this.async()
+      if(input.trim()===''){
+        done('项目名不能为空')
+        return
+      }
+      const inputDir=path.resolve(process.cwd(),input)
+      try{
+        const isExisted=await fs.pathExists(inputDir)
+        if(isExisted){
+          done('项目已存在，请重新输入项目名')
+          return
+        }
+      }catch(err){
+        console.log(err)
+        process.exit()
+      }
+      project.dir=inputDir
+      done(null,true)
+    }
+  })
+  .then(()=>{
+    return inquirer.prompt({
+      type:'rawlist',
+      name:'projectTemp',
+      message:'选择构建模板:',
+      choices:tmpls.map(item=>{
+        return{
+          name:item.text,
+          value:item.abbr,
+          short:item.repo
+        }
+      }),
+    })
+  })
+  .then(answer=>{
+    const choice=tmpls.find(item=>{
+      return item.abbr===answer.projectTemp
+    })
+    project.repo=choice.repo
+    project.tmpl=choice.abbr
+    console.log('')
+    console.log('----- 下载中 -----')
+    console.log(project.repo)
+    downloadGit(`${project.repo}`,`${project.dir}`,async err=>{
+      if(err){
+        console.log(err)
+        process.exit()
+      }
+      console.log('----- 下载完毕 -----')
+      console.log('')
+      const removeGlob=path.resolve(project.dir,'./**/.gitkeep')
+      try{
+        await del(removeGlob)
+        console.log('----- 启动步骤 ( cwd = projectDir ) -----')
+        console.log(`1) 安装 npm 包: npm i 或 cnpm i`)
+        console.log(`2) 启动开发环境: npm run dev`)
+        console.log(`3) 打包项目: npm run build`)      
+
+      }catch(err){
+        console.log(err)
+        process.exit()
+      }
+    })
+  })
+  .catch(err=>{
+    console.log(err)
+    process.exit()
+  })
