@@ -1,8 +1,0 @@
-{
-  "clientPort":9527,
-  "serverPort":9528,
-  "autoConfig":true,
-  "buildDir":"./build",
-  "originStaticDir":"",
-  "originTempDir":""
-}
