@@ -8,15 +8,20 @@ const tmpls = [
   {
     text: '移动端( webpack )',
     abbr: 'mobile( webpack )',
-    repo: 'PhoonLee/env-mobile-webpack',
+    repo: 'arrz1120/webpack',
   },
   {
     text: '移动端( vue )',
     abbr: 'mobile( vue )',
-    repo: 'PhoonLee/env-mobile-vue',
+    repo: 'arrz1120/webpack-vue',
+  },
+  {
+    text: '管理后台：vue-element',
+    abbr: 'pc( vue+element-ui )',
+    repo: 'arrz1120/vue-elememt-ui',
   }
 ]
-let project = {
+const project = {
   repo: '',
   tmpl: '',
   dir: ''
@@ -66,7 +71,7 @@ function inputProjectName() {
 }
 
 function chooseProject() {
-  inquirer.prompt([rawlist]).then(answer=>{
+  inquirer.prompt(rawlist).then(answer=>{
     const choice=tmpls.find(item=>{
       return item.abbr===answer.projectTemp
     })
