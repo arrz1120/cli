@@ -19,6 +19,11 @@ const tmpls = [
     text: '管理后台：vue-element',
     abbr: 'pc( vue+element-ui )',
     repo: 'arrz1120/vue-elememt-ui',
+  },
+  {
+    text: 'layui',
+    abbr: 'pc( layui )',
+    repo: 'arrz1120/layui',
   }
 ]
 const project = {
